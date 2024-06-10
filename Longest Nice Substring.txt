@@ -1,0 +1,79 @@
+A string s is nice if, for every letter of the alphabet that s contains, it appears both in uppercase and lowercase. For example, "abABB" is nice because 'A' and 'a' appear, and 'B' and 'b' appear. However, "abA" is not because 'b' appears, but 'B' does not.
+
+Given a string s, return the longest substring of s that is nice. If there are multiple, return the substring of the earliest occurrence. If there are none, return an empty string.
+
+ 
+
+Example 1:
+
+Input: s = "YazaAay"
+Output: "aAa"
+Explanation: "aAa" is a nice string because 'A/a' is the only letter of the alphabet in s, and both 'A' and 'a' appear.
+"aAa" is the longest nice substring.
+Example 2:
+
+Input: s = "Bb"
+Output: "Bb"
+Explanation: "Bb" is a nice string because both 'B' and 'b' appear. The whole string is a substring.
+Example 3:
+
+Input: s = "c"
+Output: ""
+Explanation: There are no nice substrings.
+ 
+
+Constraints:
+
+1 <= s.length <= 100
+s consists of uppercase and lowercase English letters.
+
+
+
+
+class Solution {
+public:
+
+bool isNice(string& s, int left, int right) {
+        std::unordered_set<char> charSet;
+        
+        // Insert all characters in the current window into the set
+        for (int i = left; i <= right; ++i) {
+            charSet.insert(s[i]);
+        }
+
+        // Check if each character's uppercase and lowercase forms are present in the set
+        for (int i = left; i <= right; ++i) {
+            char ch = s[i];
+            if (charSet.find(tolower(ch)) == charSet.end() || charSet.find(toupper(ch)) == charSet.end()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    string longestNiceSubstring(string s) {
+
+        int maxLength=0;
+        int n=s.size();
+
+        int startIdx = 0;
+
+        // Sliding window approach
+        for (int left = 0; left < n; ++left) {
+            for (int right = left; right < n; ++right) {
+                if (isNice(s, left, right)) {
+                    int currentLength = right - left + 1;
+                    if (currentLength > maxLength) {
+                        maxLength = currentLength;
+                        startIdx = left;
+                    }
+                }
+            }
+        }
+
+        return s.substr(startIdx, maxLength);
+
+        
+    }
+};
